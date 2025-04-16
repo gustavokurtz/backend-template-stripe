@@ -7,9 +7,9 @@ export class StripeController {
   constructor(private readonly stripeService: StripeService) {}
 
   @Post('checkout')
-  async createPayment(@Body() body: { email: string; userId: string }) {
-    const { email, userId } = body;
-    return this.stripeService.createPayment(email, userId);
+  async createPayment(@Body() body: { userId: string }) {
+    const { userId } = body;
+    return this.stripeService.createPayment(userId);
   }
 
   @Post('webhook')

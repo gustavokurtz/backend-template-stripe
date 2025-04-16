@@ -25,20 +25,19 @@ export class StripeService {
     this.endpointSecret = webhookSecret;
   }
 
-  async createPayment(email: string, userId: string) {
+  async createPayment(userId: string) {
     const session = await this.stripe.checkout.sessions.create({
       line_items: [
         {
           price_data: {
             currency: 'brl',
-            product_data: { name: 'Stupid Club' },
+            product_data: { name: 'Produto teste' },
             unit_amount: 6700,
           },
           quantity: 1,
         },
       ],
       mode: 'payment',
-      customer_email: email,
       success_url: 'http://localhost:3001/sucess',
       cancel_url: 'http://localhost:3001/register',
       metadata: {
