@@ -1,98 +1,118 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Backend Template Stripe
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Este repositório é um template de back-end em Node.js e NestJS, com integração ao Stripe para processamento de pagamentos via Checkout e Webhooks.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Visão Geral
 
-## Description
+Este projeto fornece uma base simples e organizada para:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- Criar sessões de pagamento no Stripe (Checkout Session)
+- Receber e tratar eventos de webhook do Stripe
+- Gerenciar configurações de ambiente e variáveis secretas
 
-## Project setup
+Ideal para quem deseja começar rapidamente um serviço de pagamentos online usando Stripe.
 
-```bash
-$ npm install
+## Tecnologias
+
+- Node.js
+- NestJS
+- TypeScript
+- Stripe SDK
+
+## Pré-requisitos
+
+- Node.js (versão 14 ou superior)
+- Yarn ou npm
+- Conta no Stripe e Keys (publicável e secreta)
+
+## Instalação
+
+1. Clone este repositório:
+   ```bash
+   git clone https://github.com/gustavokurtz/backend-template-stripe.git
+   cd backend-template-stripe
+   ```
+
+2. Instale as dependências:
+   ```bash
+   yarn install
+   # ou
+   npm install
+   ```
+
+3. Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
+   ```env
+   STRIPE_SECRET_KEY=sk_test_xxx
+   STRIPE_WEBHOOK_SECRET=whsec_xxx
+   PORT=3000
+   ```
+
+4. Compile o projeto (se usar TypeScript):
+   ```bash
+   yarn build
+   # ou
+   npm run build
+   ```
+
+## Rodando o Projeto
+
+- Em modo de desenvolvimento (hot-reload):
+  ```bash
+  yarn start:dev
+  # ou
+  npm run start:dev
+  ```
+
+- Em produção:
+  ```bash
+  yarn start
+  # ou
+  npm run start
+  ```
+
+O servidor estará disponível em `http://localhost:3000` por padrão.
+
+## Endpoints Principais
+
+- `POST /pay/checkout`
+  - Cria uma sessão de checkout no Stripe.
+  - Exemplo de corpo da requisição:
+    ```json
+    {
+      "userId": "<ID_do_usuario>",
+    }
+    ```
+
+- `POST /webhook`
+  - Recebe eventos do Stripe via Webhook.
+  - Utilize a ferramenta `stripe-cli` para enviar eventos em desenvolvimento:
+    ```bash
+    stripe listen --forward-to localhost:3000/webhook
+    ```
+
+## Estrutura do Projeto
+
+```
+src/
+├── app.module.ts          # Módulo principal
+├── main.ts                # Ponto de entrada
+├── stripe/                # Módulo Stripe
+│   ├── stripe.module.ts
+│   ├── stripe.service.ts  # Lógica de integração com Stripe
+│   └── stripe.controller.ts # Rotas de pagamento e webhook
+└── common/                # Pastas para pipes, guards, filters, etc.
+
+.env                      # Variáveis de ambiente
+package.json              # Scripts e dependências
+tsconfig.json             # Configuração TypeScript
 ```
 
-## Compile and run the project
+## Personalização
 
-```bash
-# development
-$ npm run start
+- Ajuste os valores de `amount` e `currency` conforme sua necessidade.
+- Implemente lógica adicional no `StripeService` para lidar com produtos, assinaturas e outros recursos do Stripe.
 
-# watch mode
-$ npm run start:dev
+## Contribuição
 
-# production mode
-$ npm run start:prod
-```
+Este template serve como ponto de partida. Sinta-se à vontade para adaptar e expandir conforme seu projeto.
 
-## Run tests
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
